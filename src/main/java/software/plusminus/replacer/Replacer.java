@@ -6,23 +6,17 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Replacer {
 
     private Path sourceFolder;
-    private Map<String, String> replaces;
+    private List<Replace> replaces;
 
-    public Replacer(Map<String, String> replaces) {
-        this(Paths.get(""), replaces);
-    }
-
-    public Replacer(Path sourceFolder, Map<String, String> replaces) {
+    public Replacer(Path sourceFolder, List<Replace> replaces) {
         this.sourceFolder = sourceFolder;
         this.replaces = replaces;
     }
@@ -55,7 +49,8 @@ public class Replacer {
             return;
         }
         String originalContent = FileUtils.readString(file);
-        String replacedContent = replace(originalContent);
+        String replacedContent = replace(originalContent,
+                replaces.stream().filter(Replace::isReplaceFileContent));
         if (originalContent.equals(replacedContent)) {
             return;
         }
@@ -69,7 +64,8 @@ public class Replacer {
             return;
         }
         String originalFileName = fileName.toString();
-        String replacedFileName = replace(originalFileName);
+        String replacedFileName = replace(originalFileName,
+                replaces.stream().filter(Replace::isReplaceFileName));
         if (originalFileName.equals(replacedFileName)) {
             return;
         }
@@ -83,7 +79,8 @@ public class Replacer {
 
     private void renameFolder(Path folder) {
         String originalFolderName = folder.getFileName().toString();
-        String replacedFolderName = replace(originalFolderName);
+        String replacedFolderName = replace(originalFolderName,
+                replaces.stream().filter(Replace::isReplaceFolderName));
         if (originalFolderName.equals(replacedFolderName)) {
             return;
         }
@@ -95,17 +92,17 @@ public class Replacer {
         }
     }
 
-    private String replace(String original) {
+    private String replace(String original, Stream<Replace> replaces) {
         StringBuilder replacedBuilder = new StringBuilder(original);
-        replaces.forEach((k, v) -> replaceAll(replacedBuilder, k, v));
+        replaces.forEach(r -> replace(replacedBuilder, r.getFrom(), r.getTo()));
         return replacedBuilder.toString();
     }
 
-    private static void replaceAll(StringBuilder sb, String target, String replacement) {
+    private static void replace(StringBuilder sb, String from, String to) {
         int index = 0;
-        while ((index = sb.indexOf(target, index)) != -1) {
-            sb.replace(index, index + target.length(), replacement);
-            index += replacement.length(); // move past the replacement
+        while ((index = sb.indexOf(from, index)) != -1) {
+            sb.replace(index, index + from.length(), to);
+            index += to.length();
         }
     }
 }

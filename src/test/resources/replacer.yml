@@ -1,0 +1,9 @@
+- from: plusminus-lorem
+  to: |-
+    plusminus-replaced
+    line 2
+- from: a
+  to: b
+- from: x
+  to: z
+  replaceFileName: false

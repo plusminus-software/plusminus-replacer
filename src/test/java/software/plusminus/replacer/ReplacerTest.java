@@ -15,9 +15,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,15 +28,15 @@ public class ReplacerTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
     private Path sourceFolder = Paths.get("src/test/resources/files");
-    private Map<String, String> replaces;
     private Replacer replacer;
 
 
     @Before
     public void before() {
-        replaces = new HashMap<>();
-        replaces.put("foo", "bar");
-        replacer = new Replacer(temporaryFolder.getRoot().toPath(), replaces);
+        replacer = new Replacer(
+                temporaryFolder.getRoot().toPath(),
+                Collections.singletonList(Replace.of("foo", "bar"))
+        );
     }
 
     @After
