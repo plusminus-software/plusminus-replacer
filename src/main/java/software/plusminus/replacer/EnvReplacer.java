@@ -1,11 +1,13 @@
 package software.plusminus.replacer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.experimental.UtilityClass;
 
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressFBWarnings("REDOS")
 @UtilityClass
 public class EnvReplacer {
 

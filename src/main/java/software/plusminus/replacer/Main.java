@@ -1,5 +1,6 @@
 package software.plusminus.replacer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,6 +25,7 @@ public class Main implements ApplicationRunner {
         new Replacer(sourceFolder, replaces).run();
     }
 
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private Path getConfigFile(ApplicationArguments args) {
         String configFilePath;
         if (args.containsOption("config")) {
@@ -34,6 +36,7 @@ public class Main implements ApplicationRunner {
         return Paths.get(configFilePath);
     }
 
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private Path getSourceFolder(ApplicationArguments args) {
         String sourceFolderPath;
         if (args.containsOption("sourceFolder")) {
