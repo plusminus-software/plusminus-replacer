@@ -1,4 +1,4 @@
-name: Release Plusminus Replacer application
+name: Release application
 
 on:
   push:
