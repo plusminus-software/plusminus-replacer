@@ -92,9 +92,9 @@ public class Replacer {
         }
     }
 
-    private String replace(String original, Stream<Replace> replaces) {
+    private String replace(String original, Stream<Replace> replacesStream) {
         StringBuilder replacedBuilder = new StringBuilder(original);
-        replaces.forEach(r -> replace(replacedBuilder, r.getFrom(), r.getTo()));
+        replacesStream.forEach(r -> replace(replacedBuilder, r.getFrom(), r.getTo()));
         return replacedBuilder.toString();
     }
 

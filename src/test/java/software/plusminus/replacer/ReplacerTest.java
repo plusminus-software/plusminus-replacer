@@ -33,9 +33,11 @@ public class ReplacerTest {
 
     @Before
     public void before() {
+        Replace replace = Replace.of("foo", "bar");
+        replace.setReplaceFolderName(true);
         replacer = new Replacer(
                 temporaryFolder.getRoot().toPath(),
-                Collections.singletonList(Replace.of("foo", "bar"))
+                Collections.singletonList(replace)
         );
     }
 
