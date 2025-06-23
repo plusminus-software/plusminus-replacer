@@ -10,7 +10,7 @@ public class Replace {
     private boolean replaceFileContent = true;
     private boolean replaceFileName = true;
     private boolean replaceFolderName = false;
-    private boolean replaceEnvVariables = true;
+    private boolean useEnvVariables = true;
 
     public static Replace of(String from, String to) {
         Replace replace = new Replace();

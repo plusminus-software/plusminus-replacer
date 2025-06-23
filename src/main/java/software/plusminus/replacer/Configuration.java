@@ -21,7 +21,7 @@ public class Configuration {
         }
         List<Replace> replaces = readReplaces(config);
         replaces.stream()
-                .filter(Replace::isReplaceEnvVariables)
+                .filter(Replace::isUseEnvVariables)
                 .forEach(replace -> {
                     replace.setFrom(EnvReplacer.replaceEnvVariables(replace.getFrom()));
                     replace.setTo(EnvReplacer.replaceEnvVariables(replace.getTo()));
