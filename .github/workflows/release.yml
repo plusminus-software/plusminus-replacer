@@ -29,9 +29,6 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
-      - name: Rename application JAR
-        run: mv target/plusminus-replacer-1.0-SNAPSHOT.jar target/plusminus-replacer.jar
-
       - name: Create Git tag (only for workflow_dispatch)
         if: github.event_name == 'workflow_dispatch'
         run: |
