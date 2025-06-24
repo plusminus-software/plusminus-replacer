@@ -1,24 +1,25 @@
 package software.plusminus.replacer;
 
 import lombok.experimental.UtilityClass;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.MapContext;
 
 @UtilityClass
 public class ExpressionUtil {
     
-    private static final ExpressionParser PARSER = new SpelExpressionParser();
+    private static final JexlEngine JEXL = new JexlBuilder().safe(true).create();
 
     public boolean process(String expression) {
         try {
             String preparedStatement = EnvReplacer.replaceEnvVariables(expression);
-            Expression parsedExpression = PARSER.parseExpression(preparedStatement);
-            Boolean result = parsedExpression.getValue(Boolean.class);
-            if (result == null) {
+            JexlExpression jexlExpression = JEXL.createExpression(preparedStatement);
+            Object result = jexlExpression.evaluate(new MapContext());
+            if (!(result instanceof Boolean)) {
                 throw new IllegalArgumentException("Incorrect expression: " + expression);
             }
-            return result;
+            return (Boolean) result;
         } catch (Exception e) {
             throw new IllegalArgumentException("Incorrect expression: " + expression);
         }
