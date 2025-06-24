@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class Configuration {
@@ -19,7 +20,14 @@ public class Configuration {
         if (!Files.exists(config) || !Files.isRegularFile(config)) {
             throw new IllegalStateException("The file " + config + " is missed");
         }
-        List<Replace> replaces = readReplaces(config);
+        List<Replace> replaces = readReplaces(config).stream()
+                .filter(replace -> {
+                    if (replace.getIfExpression() == null) {
+                        return true;
+                    }
+                    return ExpressionUtil.process(replace.getIfExpression());
+                })
+                .collect(Collectors.toList());
         replaces.stream()
                 .filter(Replace::isUseEnvVariables)
                 .forEach(replace -> {
