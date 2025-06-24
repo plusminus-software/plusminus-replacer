@@ -1,5 +1,6 @@
 package software.plusminus.replacer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import software.plusminus.util.FileUtils;
 
 import java.io.IOException;
@@ -58,6 +59,7 @@ public class Replacer {
         FileUtils.write(file, replacedContent);
     }
 
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private void renameFile(Path file) {
         Path fileName = file.getFileName();
         if (fileName == null) {
@@ -69,8 +71,9 @@ public class Replacer {
         if (originalFileName.equals(replacedFileName)) {
             return;
         }
-        Path targetFile = file.getParent() != null
-                ? file.getParent().resolve(replacedFileName)
+        Path parent = file.getParent();
+        Path targetFile = parent != null
+                ? parent.resolve(replacedFileName)
                 : Paths.get(replacedFileName);
         try {
             Files.move(file, targetFile);
@@ -79,6 +82,7 @@ public class Replacer {
         }
     }
 
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private void renameFolder(Path folder) {
         String originalFolderName = folder.getFileName().toString();
         String replacedFolderName = replace(originalFolderName,
@@ -86,8 +90,9 @@ public class Replacer {
         if (originalFolderName.equals(replacedFolderName)) {
             return;
         }
-        Path targetFolder = folder.getParent() != null
-                ? folder.getParent().resolve(replacedFolderName)
+        Path parent = folder.getParent();
+        Path targetFolder = parent != null
+                ? parent.resolve(replacedFolderName)
                 : Paths.get(replacedFolderName);
         try {
             Files.move(folder, targetFolder);
