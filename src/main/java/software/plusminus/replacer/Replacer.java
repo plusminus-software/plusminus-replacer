@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,8 +60,7 @@ public class Replacer {
 
     private void renameFile(Path file) {
         Path fileName = file.getFileName();
-        Path parent = file.getParent();
-        if (fileName == null || parent == null) {
+        if (fileName == null) {
             return;
         }
         String originalFileName = fileName.toString();
@@ -69,7 +69,9 @@ public class Replacer {
         if (originalFileName.equals(replacedFileName)) {
             return;
         }
-        Path targetFile = parent.resolve(replacedFileName);
+        Path targetFile = file.getParent() != null
+                ? file.getParent().resolve(replacedFileName)
+                : Paths.get(replacedFileName);
         try {
             Files.move(file, targetFile);
         } catch (IOException e) {
@@ -84,7 +86,9 @@ public class Replacer {
         if (originalFolderName.equals(replacedFolderName)) {
             return;
         }
-        Path targetFolder = folder.getParent().resolve(replacedFolderName);
+        Path targetFolder = folder.getParent() != null
+                ? folder.getParent().resolve(replacedFolderName)
+                : Paths.get(replacedFolderName);
         try {
             Files.move(folder, targetFolder);
         } catch (IOException e) {
