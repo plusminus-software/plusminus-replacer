@@ -13,10 +13,12 @@ and put in the working folder
   to: |-
     foo1
     bar1
+  if: "${USER} == 'Taras'" #use this replace only in case this if expression is true, optional field
   replaceFileContent: true #replaces content of all textual files inside working folder, true is the default value
   replaceFileName: true #replaces file names of all files inside working folder, true is the default value
   replaceFolderName: false #replaces folder names of all folders inside working folder, false is the default value
   useEnvVariables: true #replaces text inside 'from' and 'to' with environment variables with format ${MY_ENV_VARIABLE:defaultValue}, false is the default value
 - from: foo2
   to: foo2bar2
+...
 ```
