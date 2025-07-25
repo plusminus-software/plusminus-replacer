@@ -60,7 +60,6 @@ public class Replacer {
         FileUtils.write(file, replacedContent);
     }
 
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private void renameFile(Path file) {
         Path fileName = file.getFileName();
         if (fileName == null) {
@@ -79,7 +78,6 @@ public class Replacer {
         }
     }
 
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private void renameFolder(Path folder) {
         String originalFolderName = folder.getFileName().toString();
         String replacedFolderName = replace(originalFolderName, folder, ReplaceScope.FOLDER_NAME);
@@ -94,6 +92,7 @@ public class Replacer {
         }
     }
 
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private Path getTarget(Path source, String targetName) {
         Path parent = source.getParent();
         return parent != null
