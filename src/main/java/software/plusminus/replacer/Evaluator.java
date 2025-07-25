@@ -5,6 +5,7 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 import software.plusminus.util.ResourceUtils;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class Evaluator {
                 .build();
         addStrman(context);
         addEnvVariables(context);
+        addDefaultVariables(context);
         return context;
     }
 
@@ -58,6 +60,11 @@ public class Evaluator {
             String key = prepareVariableKey(entry.getKey());
             bindings.putMember(key, entry.getValue());
         }
+    }
+
+    private void addDefaultVariables(Context context) {
+        Value bindings = context.getBindings("js");
+        bindings.putMember("PATH_SEPARATOR", File.separator);
     }
 
     private Value evaluateWithVariables(String code, Map<String, String> variables) {
