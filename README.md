@@ -14,7 +14,7 @@ and put in the working folder
   if: "${USER} == 'Taras'" #optional
   scopes: [CONTENT, FILE_NAME, FOLDER_NAME] #optional, [CONTENT] is default
 - from: foo2
-  to: -
+  to: |-
     multi
     line
     string
