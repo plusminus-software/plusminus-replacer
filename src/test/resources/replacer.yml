@@ -6,4 +6,4 @@
   to: b
 - from: x
   to: z
-  replaceFileName: false
+  scopes: [FOLDER_NAME]

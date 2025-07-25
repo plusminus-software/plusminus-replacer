@@ -15,7 +15,9 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,11 +36,10 @@ public class ReplacerTest {
     @Before
     public void before() {
         Replace replace = Replace.of("foo", "bar");
-        replace.setReplaceFolderName(true);
-        replacer = new Replacer(
-                temporaryFolder.getRoot().toPath(),
-                Collections.singletonList(replace)
-        );
+        replace.setScopes(new HashSet<>(Arrays.asList(ReplaceScope.CONTENT,
+                ReplaceScope.FILE_NAME, ReplaceScope.FOLDER_NAME)));
+        replacer = new Replacer(temporaryFolder.getRoot().toPath(),
+                Collections.singletonList(replace));
     }
 
     @After

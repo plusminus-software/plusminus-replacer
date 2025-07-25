@@ -8,8 +8,10 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,8 +53,7 @@ public class Replacer {
             return;
         }
         String originalContent = FileUtils.readString(file);
-        String replacedContent = replace(originalContent,
-                replaces.stream().filter(Replace::isReplaceFileContent));
+        String replacedContent = replace(originalContent, file, ReplaceScope.CONTENT);
         if (originalContent.equals(replacedContent)) {
             return;
         }
@@ -66,15 +67,11 @@ public class Replacer {
             return;
         }
         String originalFileName = fileName.toString();
-        String replacedFileName = replace(originalFileName,
-                replaces.stream().filter(Replace::isReplaceFileName));
+        String replacedFileName = replace(originalFileName, file, ReplaceScope.FILE_NAME);
         if (originalFileName.equals(replacedFileName)) {
             return;
         }
-        Path parent = file.getParent();
-        Path targetFile = parent != null
-                ? parent.resolve(replacedFileName)
-                : Paths.get(replacedFileName);
+        Path targetFile = getTarget(file, replacedFileName);
         try {
             Files.move(file, targetFile);
         } catch (IOException e) {
@@ -85,15 +82,11 @@ public class Replacer {
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private void renameFolder(Path folder) {
         String originalFolderName = folder.getFileName().toString();
-        String replacedFolderName = replace(originalFolderName,
-                replaces.stream().filter(Replace::isReplaceFolderName));
+        String replacedFolderName = replace(originalFolderName, folder, ReplaceScope.FOLDER_NAME);
         if (originalFolderName.equals(replacedFolderName)) {
             return;
         }
-        Path parent = folder.getParent();
-        Path targetFolder = parent != null
-                ? parent.resolve(replacedFolderName)
-                : Paths.get(replacedFolderName);
+        Path targetFolder = getTarget(folder, replacedFolderName);
         try {
             Files.move(folder, targetFolder);
         } catch (IOException e) {
@@ -101,13 +94,26 @@ public class Replacer {
         }
     }
 
-    private String replace(String original, Stream<Replace> replacesStream) {
+    private Path getTarget(Path source, String targetName) {
+        Path parent = source.getParent();
+        return parent != null
+                ? parent.resolve(targetName)
+                : Paths.get(targetName);
+    }
+
+    private String replace(String original, Path path, ReplaceScope scope) {
         StringBuilder replacedBuilder = new StringBuilder(original);
-        replacesStream.forEach(r -> replace(replacedBuilder, r.getFrom(), r.getTo()));
+        Map<String, String> variables = Collections.singletonMap("PATH", path.toString());
+        replaces.stream()
+                .filter(r -> r.getScopes().contains(scope))
+                .filter(r -> r.getCondition() == null || Evaluator.condition(r.getCondition(), variables))
+                .forEach(r -> replace(replacedBuilder,
+                        Evaluator.evaluate(r.getFrom(), variables),
+                        Evaluator.evaluate(r.getTo(), variables)));
         return replacedBuilder.toString();
     }
 
-    private static void replace(StringBuilder sb, String from, String to) {
+    private void replace(StringBuilder sb, String from, String to) {
         int index = 0;
         while ((index = sb.indexOf(from, index)) != -1) {
             sb.replace(index, index + from.length(), to);
