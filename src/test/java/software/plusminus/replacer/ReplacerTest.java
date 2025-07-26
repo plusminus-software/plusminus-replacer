@@ -32,13 +32,12 @@ public class ReplacerTest {
     private Path sourceFolder = Paths.get("src/test/resources/files");
     private Replacer replacer;
 
-
     @Before
     public void before() {
         Replace replace = Replace.of("foo", "bar");
         replace.setScopes(new HashSet<>(Arrays.asList(ReplaceScope.CONTENT,
                 ReplaceScope.FILE_NAME, ReplaceScope.FOLDER_NAME)));
-        replacer = new Replacer(temporaryFolder.getRoot().toPath(),
+        replacer = new Replacer(temporaryFolder.getRoot().toPath(), Paths.get(""),
                 Collections.singletonList(replace));
     }
 

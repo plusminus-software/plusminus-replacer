@@ -1,6 +1,7 @@
 package software.plusminus.replacer;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.AllArgsConstructor;
 import software.plusminus.util.FileUtils;
 
 import java.io.IOException;
@@ -15,15 +16,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@AllArgsConstructor
 public class Replacer {
 
     private Path sourceFolder;
+    private Path configFile;
     private List<Replace> replaces;
-
-    public Replacer(Path sourceFolder, List<Replace> replaces) {
-        this.sourceFolder = sourceFolder;
-        this.replaces = replaces;
-    }
 
     public void run() {
         List<Path> filesAndDirectories = collectFilesAndDirectories();
@@ -42,6 +40,7 @@ public class Replacer {
     private List<Path> collectFilesAndDirectories() {
         try (Stream<Path> stream = Files.walk(sourceFolder)) {
             return stream.filter(path -> !path.equals(sourceFolder))
+                    .filter(path -> !path.equals(configFile))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new UncheckedIOException(e);

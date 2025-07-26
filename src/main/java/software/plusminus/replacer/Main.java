@@ -22,7 +22,7 @@ public class Main implements ApplicationRunner {
         Path sourceFolder = getSourceFolder(args);
         Path configFile = getConfigFile(args);
         List<Replace> replaces = Configuration.buildReplaces(configFile);
-        new Replacer(sourceFolder, replaces).run();
+        new Replacer(sourceFolder, configFile, replaces).run();
     }
 
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
