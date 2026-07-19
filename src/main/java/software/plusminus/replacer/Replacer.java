@@ -38,9 +38,10 @@ public class Replacer {
     }
 
     private List<Path> collectFilesAndDirectories() {
+        Path normalizedConfigFile = configFile.toAbsolutePath().normalize();
         try (Stream<Path> stream = Files.walk(sourceFolder)) {
             return stream.filter(path -> !path.equals(sourceFolder))
-                    .filter(path -> !path.equals(configFile))
+                    .filter(path -> !path.toAbsolutePath().normalize().equals(normalizedConfigFile))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -112,6 +113,9 @@ public class Replacer {
     }
 
     private void replace(StringBuilder sb, String from, String to) {
+        if (from.isEmpty()) {
+            return;
+        }
         int index = 0;
         while ((index = sb.indexOf(from, index)) != -1) {
             sb.replace(index, index + from.length(), to);

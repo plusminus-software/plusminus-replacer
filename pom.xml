@@ -7,11 +7,10 @@
     <parent>
         <groupId>software.plusminus</groupId>
         <artifactId>plusminus-parent</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.7</version>
         <relativePath/>
     </parent>
 
-    <groupId>software.plusminus</groupId>
     <artifactId>plusminus-replacer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -19,6 +18,20 @@
     <description>Search and replace filenames, folder names and text file's content at once.</description>
     <url>https://github.com/plusminus-software/plusminus-replacer</url>
 
+    <scm>
+        <connection>scm:git:git://github.com/plusminus-software/plusminus-replacer.git</connection>
+        <developerConnection>scm:git:ssh://github.com:plusminus-software/plusminus-replacer.git</developerConnection>
+        <url>https://github.com/plusminus-software/plusminus-replacer/tree/main</url>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>Github Issues</system>
+        <url>https://github.com/plusminus-software/plusminus-replacer/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>Github Actions</system>
+        <url>https://github.com/plusminus-software/plusminus-replacer/actions</url>
+    </ciManagement>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -26,7 +39,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
     <developers>
         <developer>
             <name>Taras Shpek</name>
@@ -38,13 +50,6 @@
             <timezone>Europe/Kyiv</timezone>
         </developer>
     </developers>
-
-    <scm>
-        <connection>scm:git:git://github.com/plusminus-software/plusminus-replacer.git</connection>
-        <developerConnection>scm:git:ssh://github.com:plusminus-software/plusminus-replacer.git</developerConnection>
-        <url>https://github.com/plusminus-software/plusminus-replacer/tree/main</url>
-        <tag>HEAD</tag>
-    </scm>
 
     <dependencies>
         <dependency>
@@ -76,19 +81,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>sonatype-central-snapshots</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <finalName>plusminus-replacer</finalName>

@@ -17,6 +17,8 @@ import java.nio.file.Path;
 @UtilityClass
 public class TextDetector {
 
+    private static final int REPLACEMENT_CHAR = 0xFFFD;
+
     public boolean isMostlyText(Path path, int maxBytes, double threshold) {
         byte[] buffer = new byte[maxBytes];
         int bytesRead;
@@ -57,17 +59,39 @@ public class TextDetector {
     }
 
     private boolean isTextual(int codePoint) {
-        return Character.isLetterOrDigit(codePoint)
-                || Character.isWhitespace(codePoint)
-                || isEmoji(codePoint);
+        // Bytes that could not be decoded as UTF-8 become the replacement char;
+        // a high count of these indicates binary content.
+        if (codePoint == REPLACEMENT_CHAR) {
+            return false;
+        }
+        // Common whitespace (space, tab, newline, carriage return) is text.
+        if (Character.isWhitespace(codePoint)) {
+            return true;
+        }
+        // Everything else is text only if it is a printable character. Punctuation and
+        // symbols (which dominate minified JS/JSON, XML and lock files) are printable and
+        // therefore treated as text; NUL and other control chars are not.
+        return isPrintable(codePoint);
     }
 
-    private boolean isEmoji(int codePoint) {
-        Character.UnicodeBlock block = Character.UnicodeBlock.of(codePoint);
-        return block == Character.UnicodeBlock.EMOTICONS
-                || block == Character.UnicodeBlock.MISCELLANEOUS_SYMBOLS_AND_PICTOGRAPHS
-                || block == Character.UnicodeBlock.TRANSPORT_AND_MAP_SYMBOLS
-                || block == Character.UnicodeBlock.DINGBATS;
+    private boolean isPrintable(int codePoint) {
+        if (Character.isISOControl(codePoint) || !Character.isDefined(codePoint)) {
+            return false;
+        }
+        return isPrintableType(Character.getType(codePoint));
+    }
+
+    private boolean isPrintableType(int type) {
+        switch (type) {
+            case Character.CONTROL:
+            case Character.FORMAT:
+            case Character.SURROGATE:
+            case Character.PRIVATE_USE:
+            case Character.UNASSIGNED:
+                return false;
+            default:
+                return true;
+        }
     }
 
     private int getUtf8ByteLength(int codePoint) {

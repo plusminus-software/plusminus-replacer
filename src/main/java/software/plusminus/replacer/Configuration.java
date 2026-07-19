@@ -19,7 +19,17 @@ public class Configuration {
         if (!Files.exists(config) || !Files.isRegularFile(config)) {
             throw new IllegalStateException("The file " + config + " is missed");
         }
-        return readReplaces(config);
+        List<Replace> replaces = readReplaces(config);
+        validate(replaces);
+        return replaces;
+    }
+
+    private void validate(List<Replace> replaces) {
+        for (Replace replace : replaces) {
+            if (replace.getFrom() == null || replace.getFrom().isEmpty()) {
+                throw new IllegalStateException("The 'from' value must not be empty in replace: " + replace);
+            }
+        }
     }
 
     private List<Replace> readReplaces(Path config) {
