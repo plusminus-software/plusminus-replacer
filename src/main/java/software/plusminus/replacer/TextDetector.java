@@ -24,8 +24,14 @@ public class TextDetector {
         int bytesRead;
 
         try (InputStream in = Files.newInputStream(path)) {
-            bytesRead = in.read(buffer, 0, maxBytes);
-            if (bytesRead == -1) {
+            int totalRead = 0;
+            int read;
+            while (totalRead < maxBytes
+                    && (read = in.read(buffer, totalRead, maxBytes - totalRead)) != -1) {
+                totalRead += read;
+            }
+            bytesRead = totalRead;
+            if (bytesRead == 0) {
                 return false; // empty file
             }
         } catch (IOException e) {
