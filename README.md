@@ -28,3 +28,15 @@ and put in the working folder
     string
 ...
 ```
+
+## Building
+
+Requires JDK 8. Build with the Maven wrapper:
+
+```bash
+./mvnw clean install
+```
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
